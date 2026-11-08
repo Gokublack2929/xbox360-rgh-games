@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xbox 360 RGH Games</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#101010;color:white;font-family:Arial,sans-serif}
+header{background:#080808;padding:17px 5%;border-bottom:3px solid #107c10;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.logo{font-size:20px;font-weight:bold}
+.logo span{color:#39dc30}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{color:white;text-decoration:none;font-size:13px}
+nav a:hover{color:#39dc30}
+button{cursor:pointer}
+.hero{text-align:center;padding:48px 15px;background:linear-gradient(120deg,#061606,#107c10,#101010)}
+.hero h1{font-size:clamp(27px,6vw,43px);margin-bottom:12px}
+.hero p{color:#ddd;margin-bottom:20px}
+.search{max-width:550px;margin:auto}
+input,select,textarea{width:100%;padding:12px;background:#292929;color:white;border:1px solid #555;border-radius:5px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:1px solid #39dc30}
+main{padding:28px 5%}
+section{margin-bottom:35px}
+h2{border-left:4px solid #39dc30;padding-left:12px;margin-bottom:18px}
+.filters,.alphabet{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.filters button,.alphabet button{background:#252525;color:white;border:1px solid #444;padding:9px 12px;border-radius:4px}
+.filters button.active,.alphabet button.active,.filters button:hover,.alphabet button:hover{background:#107c10}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:15px}
+.game{background:#202020;border:1px solid #333;border-radius:7px;overflow:hidden}
+.game:hover{border-color:#39dc30;transform:translateY(-3px)}
+.cover{height:205px;background:linear-gradient(145deg,#173e17,#101010);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;color:#b6f2b0;font-weight:bold;overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover}
+.info{padding:12px}
+.info h3{font-size:15px;margin-bottom:8px}
+.info p{font-size:12px;color:#aaa;margin-bottom:9px}
+.tag{display:inline-block;background:#303030;color:#8bea82;padding:5px 7px;border-radius:3px;font-size:11px;margin-bottom:10px}
+.btn{display:block;width:100%;background:#107c10;color:white;border:0;border-radius:4px;padding:11px;text-align:center;text-decoration:none;font-weight:bold;font-size:12px}
+.btn:hover{background:#159b15}
+.gray{background:#353535}
+.red{background:#a32c2c}
+.empty{grid-column:1/-1;text-align:center;padding:35px;background:#1b1b1b;color:#aaa;border-radius:6px}
+
+/* ADMINISTRACIÓN */
+.admin{display:none;background:#1c1c1c;border:1px solid #107c10;border-radius:8px;padding:18px;margin-bottom:30px}
+.admin h2{margin-bottom:18px}
+.admin-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.admin-header h2{margin:0}
+.close-admin{width:auto;padding:10px 15px;background:#a32c2c;border:0;border-radius:5px;color:white;font-weight:bold}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:13px;color:#ccc}
+textarea{min-height:85px;resize:vertical}
+.check{display:flex;align-items:center;gap:9px;font-size:13px;color:#ddd}
+.check input{width:auto}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.actions button{flex:1;min-width:120px}
+.admin-list{margin-top:25px;border-top:1px solid #444;padding-top:18px}
+.admin-item{background:#292929;padding:12px;border-radius:5px;margin:8px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.admin-item small{color:#aaa}
+.admin-buttons{display:flex;gap:6px}
+.admin-buttons button{padding:8px;border:0;border-radius:4px;color:white}
+.about{background:#202020;padding:20px;border-radius:7px;color:#ccc;line-height:1.7}
+.about h3{color:#39dc30;margin-bottom:8px}
+footer{background:#080808;border-top:2px solid #107c10;padding:23px;text-align:center;color:#999;font-size:12px;line-height:1.8}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:5;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:#202020;border:1px solid #107c10;border-radius:8px;padding:22px;width:100%;max-width:430px;max-height:85vh;overflow:auto}
+.modal-box h2{margin:15px 0}
+.modal-box p{color:#ccc;line-height:1.6;margin:10px 0}
+.modal-box img{width:130px;max-height:170px;object-fit:cover;margin:10px 0}
+
+@media(max-width:500px){
+ header{justify-content:center}
+ nav{justify-content:center}
+ main{padding:22px 13px}
+ .games{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .cover{height:175px}
+ .formgrid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🎮 XBOX <span>360 RGH GAMES</span></div>
+ <nav>
+  <a href="#inicio">INICIO</a>
+  <a href="#catalogo">JUEGOS</a>
+  <a href="#administracion" onclick="toggleAdmin();return false;">ADMINISTRAR</a>
+ </nav>
+</header>
+
+<div class="hero" id="inicio">
+ <h1>XBOX 360 <span style="color:#70ff68">RGH GAMES</span></h1>
+ <p>Tu biblioteca digital de Xbox 360</p>
+ <div class="search">
+  <input id="buscar" placeholder="🔎 Buscar un juego..." oninput="mostrar()">
+ </div>
+</div>
+
+<main>
+
+<!-- PANEL DE ADMINISTRACIÓN -->
+
+<section class="admin" id="administracion">
+
+ <div class="admin-header">
+  <h2>⚙️ ADMINISTRAR JUEGOS</h2>
+  <button class="close-admin" type="button" onclick="cerrarAdmin()">✖ CERRAR</button>
+ </div>
+
+ <p style="color:#aaa;font-size:13px;margin-bottom:18px">
+ Agrega contenido autorizado a tu biblioteca.
+ </p>
+
+ <form id="formJuego">
+  <div class="formgrid">
+
+   <div class="field">
+    <label>Nombre del juego *</label>
+    <input id="nombre" required placeholder="Nombre del juego">
+   </div>
+
+   <div class="field">
+    <label>Categoría *</label>
+    <select id="genero" required>
+     <option value="">Seleccionar categoría</option>
+     <option>Acción</option>
+     <option>Aventura</option>
+     <option>Carreras</option>
+     <option>Deportes</option>
+     <option>Terror</option>
+     <option>Disparos</option>
+     <option>Homebrew</option>
+    </select>
+   </div>
+
+   <div class="field">
+    <label>Año</label>
+    <input id="anio" placeholder="Ejemplo: 2020">
+   </div>
+
+   <div class="field">
+    <label>Formato</label>
+    <select id="formato">
+     <option>GOD</option>
+     <option>ISO</option>
+     <option>XBLA</option>
+     <option>Homebrew</option>
+     <option>Otro</option>
+    </select>
+   </div>
+
+   <div class="field">
+    <label>Tamaño del archivo</label>
+    <input id="tamano" placeholder="Ejemplo: 2 GB">
+   </div>
+
+   <div class="field">
+    <label>Portada (URL de imagen)</label>
+    <input id="portada" placeholder="https://...">
+   </div>
+
+   <div class="field full">
+    <label>Descripción</label>
+    <textarea id="descripcion" placeholder="Escribe la descripción del juego..."></textarea>
+   </div>
+
+   <div class="field full">
+    <label>Enlace de MediaFire autorizado</label>
+    <input id="mediafire" placeholder="https://www.mediafire.com/...">
+   </div>
+
+   <div class="field full">
+    <label class="check">
+     <input type="checkbox" id="destacado">
+     Mostrar también en juegos destacados
+    </label>
+   </div>
+
+  </div>
+
+  <div class="actions">
+   <button class="btn" type="submit" id="guardar">➕ AGREGAR JUEGO</button>
+   <button class="btn gray" type="button" onclick="limpiar()">LIMPIAR</button>
+  </div>
+ </form>
+
+ <div class="admin-list">
+  <h3>📋 JUEGOS REGISTRADOS</h3>
+  <div id="listaAdmin"></div>
+ </div>
+
+ <div class="actions">
+  <button class="btn gray" type="button" onclick="exportar()">GUARDAR COPIA DE SEGURIDAD</button>
+  <button class="btn gray" type="button" onclick="document.getElementById('importar').click()">RESTAURAR COPIA</button>
+  <input type="file" id="importar" accept=".json" hidden onchange="importar(event)">
+ </div>
+
+ <div class="actions">
+  <button class="close-admin" type="button" onclick="cerrarAdmin()">✖ CERRAR ADMINISTRACIÓN</button>
+ </div>
+
+</section>
+
+<!-- CATÁLOGO -->
+
+<section id="catalogo">
+ <h2>🎮 CATÁLOGO DE JUEGOS</h2>
+ <p style="color:#aaa;font-size:13px;margin-bottom:18px">
+ Explora todos los juegos disponibles.
+ </p>
+
+ <div class="alphabet" id="alfabeto"></div>
+ <div class="filters" id="filtros"></div>
+ <div class="games" id="juegos"></div>
+</section>
+
+<section>
+ <h2>⭐ JUEGOS DESTACADOS</h2>
+ <div class="games" id="destacados"></div>
+</section>
+
+<section>
+ <h2>ACERCA DE NOSOTROS</h2>
+ <div class="about">
+  <h3>Xbox 360 RGH Games</h3>
+  <p>Biblioteca independiente de videojuegos y contenido autorizado para Xbox 360.</p>
+  <p>Proyecto no afiliado con Microsoft.</p>
+ </div>
+</section>
+
+</main>
+
+<footer>
+ <p>© 2026 Xbox 360 RGH Games</p>
+ <p>Biblioteca digital independiente.</p>
+</footer>
+
+<div class="modal" id="modal">
+ <div class="modal-box">
+  <button class="btn gray" onclick="cerrar()">CERRAR ✕</button>
+  <div id="detalle"></div>
+ </div>
+</div>
+
+<script>
+
+// DATOS GUARDADOS EN EL NAVEGADOR
+
+let juegos=[];
+let editando=null;
+let categoriaActual="Todos";
+let letraActual="Todas";
+
+try{
+ juegos=JSON.parse(localStorage.getItem("xbox360_juegos")||"[]");
+ if(!Array.isArray(juegos))juegos=[];
+}catch(e){
+ juegos=[];
+}
+
+const categorias=[
+ "Todos","Acción","Aventura","Carreras",
+ "Deportes","Terror","Disparos","Homebrew"
+];
+
+function guardarDatos(){
+ localStorage.setItem("xbox360_juegos",JSON.stringify(juegos));
+}
+
+// ABRIR Y CERRAR ADMINISTRACIÓN
+
+function abrirAdmin(){
+ const panel=document.getElementById("administracion");
+ panel.style.display="block";
+ mostrarAdmin();
+}
+
+function cerrarAdmin(){
+ const panel=document.getElementById("administracion");
+ panel.style.display="none";
+}
+
+function toggleAdmin(){
+ const panel=document.getElementById("administracion");
+
+ if(getComputedStyle(panel).display==="none"){
+  abrirAdmin();
+ }else{
+  cerrarAdmin();
+ }
+}
+
+function limpiar(){
+ document.getElementById("formJuego").reset();
+ editando=null;
+ document.getElementById("guardar").textContent="➕ AGREGAR JUEGO";
+}
+
+function urlValida(valor){
+ if(!valor)return true;
+ try{
+  const u=new URL(valor);
+  return u.protocol==="https:"||u.protocol==="http:";
+ }catch(e){return false;}
+}
+
+// AGREGAR O EDITAR JUEGO
+
+document.getElementById("formJuego").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const juego={
+  id:editando!==null?editando:Date.now(),
+  nombre:document.getElementById("nombre").value.trim(),
+  genero:document.getElementById("genero").value,
+  anio:document.getElementById("anio").value.trim(),
+  formato:document.getElementById("formato").value,
+  tamano:document.getElementById("tamano").value.trim(),
+  portada:document.getElementById("portada").value.trim(),
+  descripcion:document.getElementById("descripcion").value.trim(),
+  mediafire:document.getElementById("mediafire").value.trim(),
+  destacado:document.getElementById("destacado").checked
+ };
+
+ if(!juego.nombre||!juego.genero){
+  alert("Completa el nombre y la categoría.");
+  return;
+ }
+
+ if(!urlValida(juego.portada)||!urlValida(juego.mediafire)){
+  alert("Revisa los enlaces. Deben comenzar con http:// o https://");
+  return;
+ }
+
+ if(editando!==null){
+  const index=juegos.findIndex(x=>x.id===editando);
+  if(index!==-1)juegos[index]=juego;
+ }else{
+  juegos.push(juego);
+ }
+
+ guardarDatos();
+ limpiar();
+ mostrar();
+ mostrarAdmin();
+ mostrarDestacados();
+ alert("¡Juego guardado correctamente!");
+});
+
+// LISTA DEL ADMINISTRADOR
+
+function mostrarAdmin(){
+ const lista=document.getElementById("listaAdmin");
+ lista.innerHTML="";
+
+ if(!juegos.length){
+  lista.textContent="Todavía no has agregado juegos.";
+  lista.style.color="#aaa";
+  return;
+ }
+
+ lista.style.color="white";
+
+ juegos.forEach(j=>{
+  const fila=document.createElement("div");
+  fila.className="admin-item";
+
+  const texto=document.createElement("div");
+  const nombre=document.createElement("strong");
+  nombre.textContent=j.nombre;
+  const categoria=document.createElement("small");
+  categoria.textContent=" · "+j.genero;
+  texto.append(nombre,categoria);
+
+  const botones=document.createElement("div");
+  botones.className="admin-buttons";
+
+  const editar=document.createElement("button");
+  editar.textContent="✏️";
+  editar.style.background="#107c10";
+  editar.onclick=()=>editarJuego(j.id);
+
+  const borrar=document.createElement("button");
+  borrar.textContent="🗑️";
+  borrar.style.background="#a32c2c";
+  borrar.onclick=()=>eliminarJuego(j.id);
+
+  botones.append(editar,borrar);
+  fila.append(texto,botones);
+  lista.appendChild(fila);
+ });
+}
+
+function editarJuego(id){
+ const j=juegos.find(x=>x.id===id);
+ if(!j)return;
+
+ editando=id;
+ document.getElementById("nombre").value=j.nombre;
+ document.getElementById("genero").value=j.genero;
+ document.getElementById("anio").value=j.anio;
+ document.getElementById("formato").value=j.formato;
+ document.getElementById("tamano").value=j.tamano;
+ document.getElementById("portada").value=j.portada;
+ document.getElementById("descripcion").value=j.descripcion;
+ document.getElementById("mediafire").value=j.mediafire;
+ document.getElementById("destacado").checked=j.destacado;
+ document.getElementById("guardar").textContent="GUARDAR CAMBIOS";
+
+ document.getElementById("administracion")
+ .scrollIntoView({behavior:"smooth"});
+}
+
+function eliminarJuego(id){
+ if(!confirm("¿Seguro que quieres eliminar este juego?"))return;
+
+ juegos=juegos.filter(j=>j.id!==id);
+ guardarDatos();
+ mostrar();
+ mostrarAdmin();
+ mostrarDestacados();
+}
+
+// CATEGORÍAS Y LETRAS
+
+function crearAlfabeto(){
+ const cont=document.getElementById("alfabeto");
+
+ ["Todas",..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].forEach(letra=>{
+  const b=document.createElement("button");
+  b.textContent=letra;
+  if(letra==="Todas")b.classList.add("active");
+
+  b.onclick=()=>{
+   letraActual=letra;
+   cont.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+   b.classList.add("active");
+   mostrar();
+  };
+
+  cont.appendChild(b);
+ });
+}
+
+function crearFiltros(){
+ const cont=document.getElementById("filtros");
+
+ categorias.forEach(c=>{
+  const b=document.createElement("button");
+  b.textContent=c;
+  if(c==="Todos")b.classList.add("active");
+
+  b.onclick=()=>{
+   categoriaActual=c;
+   cont.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+   b.classList.add("active");
+   mostrar();
+  };
+
+  cont.appendChild(b);
+ });
+}
+
+// CATÁLOGO
+
+function mostrar(){
+ const cont=document.getElementById("juegos");
+ const busqueda=document.getElementById("buscar").value.toLowerCase().trim();
+
+ const lista=juegos.filter(j=>
+  j.nombre.toLowerCase().includes(busqueda)&&
+  (categoriaActual==="Todos"||j.genero===categoriaActual)&&
+  (letraActual==="Todas"||j.nombre.toUpperCase().startsWith(letraActual))
+ );
+
+ cont.innerHTML="";
+
+ if(!lista.length){
+  cont.innerHTML='<div class="empty">No hay juegos en esta selección.</div>';
+  return;
+ }
+
+ lista.forEach(j=>{
+  const card=document.createElement("article");
+  card.className="game";
+
+  const cover=document.createElement("div");
+  cover.className="cover";
+
+  if(j.portada){
+   const img=document.createElement("img");
+   img.src=j.portada;
+   img.alt=j.nombre;
+   img.onerror=()=>{cover.textContent="🎮 "+j.nombre};
+   cover.appendChild(img);
+  }else{
+   cover.textContent="🎮 "+j.nombre;
+  }
+
+  const info=document.createElement("div");
+  info.className="info";
+
+  const h=document.createElement("h3");
+  h.textContent=j.nombre;
+
+  const p=document.createElement("p");
+  p.textContent=j.genero+" · "+j.anio;
+
+  const tag=document.createElement("span");
+  tag.className="tag";
+  tag.textContent=j.formato;
+
+  const button=document.createElement("button");
+  button.className="btn";
+  button.textContent="VER DETALLES";
+  button.onclick=()=>verJuego(j.id);
+
+  info.append(h,p,tag,button);
+  card.append(cover,info);
+  cont.appendChild(card);
+ });
+}
+
+function mostrarDestacados(){
+ const cont=document.getElementById("destacados");
+ cont.innerHTML="";
+
+ const lista=juegos.filter(j=>j.destacado);
+
+ if(!lista.length){
+  cont.innerHTML='<div class="empty">Próximamente nuevos destacados.</div>';
+  return;
+ }
+
+ lista.forEach(j=>{
+  const b=document.createElement("button");
+  b.className="btn";
+  b.style.maxWidth="300px";
+  b.style.marginBottom="9px";
+  b.textContent="⭐ "+j.nombre;
+  b.onclick=()=>verJuego(j.id);
+  cont.appendChild(b);
+ });
+}
+
+// DETALLES
+
+function verJuego(id){
+ const j=juegos.find(x=>x.id===id);
+ if(!j)return;
+
+ const d=document.getElementById("detalle");
+ d.innerHTML="";
+
+ const h=document.createElement("h2");
+ h.textContent=j.nombre;
+ d.appendChild(h);
+
+ if(j.portada){
+  const img=document.createElement("img");
+  img.src=j.portada;
+  img.alt=j.nombre;
+  d.appendChild(img);
+ }
+
+ [
+  "Categoría: "+j.genero,
+  "Año: "+j.anio,
+  "Formato: "+j.formato,
+  "Tamaño: "+j.tamano,
+  "Compatibilidad declarada: Xbox 360 RGH",
+  j.descripcion
+ ].forEach(t=>{
+  const p=document.createElement("p");
+  p.textContent=t;
+  d.appendChild(p);
+ });
+
+ if(j.mediafire){
+  const a=document.createElement("a");
+  a.href=j.mediafire;
+  a.target="_blank";
+  a.rel="noopener noreferrer";
+  a.className="btn";
+  a.style.marginTop="15px";
+  a.textContent="⬇ DESCARGAR EN MEDIAFIRE";
+  d.appendChild(a);
+ }else{
+  const p=document.createElement("p");
+  p.textContent="Enlace de descarga pendiente.";
+  d.appendChild(p);
+ }
+
+ document.getElementById("modal").style.display="flex";
+}
+
+function cerrar(){
+ document.getElementById("modal").style.display="none";
+}
+
+document.getElementById("modal").onclick=e=>{
+ if(e.target.id==="modal")cerrar();
+};
+
+// COPIA DE SEGURIDAD
+
+function exportar(){
+ const blob=new Blob([JSON.stringify(juegos,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="xbox360-juegos.json";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+function importar(e){
+ const archivo=e.target.files[0];
+ if(!archivo)return;
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+  try{
+   const datos=JSON.parse(reader.result);
+
+   if(!Array.isArray(datos)||!datos.every(j=>
+    j&&typeof j.nombre==="string"&&typeof j.id==="number"
+   )){
+    throw new Error("Archivo inválido");
+   }
+
+   if(!confirm("¿Quieres reemplazar el catálogo actual con esta copia?"))return;
+
+   juegos=datos;
+   guardarDatos();
+   limpiar();
+   mostrar();
+   mostrarAdmin();
+   mostrarDestacados();
+   alert("Catálogo restaurado.");
+  }catch(error){
+   alert("No se pudo leer el archivo.");
+  }
+ };
+
+ reader.readAsText(archivo);
+ e.target.value="";
+}
+
+// INICIAR
+
+crearAlfabeto();
+crearFiltros();
+mostrar();
+mostrarDestacados();
+
+</script>
+</body>
+</html>
